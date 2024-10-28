@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ArtInstitute</string>
+    <string name="copyright"><u>© 2024, Arman Dervisevic</u></string>
+    <string name="page_limit">15</string>
+</resources>
