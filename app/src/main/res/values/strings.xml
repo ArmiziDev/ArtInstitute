@@ -2,4 +2,8 @@
     <string name="app_name">ArtInstitute</string>
     <string name="copyright"><u>© 2024, Arman Dervisevic</u></string>
     <string name="page_limit">15</string>
+    <string name="docs_link"><u>https://api.arctic.edu/docs/</u></string>
+    <string name="font_link"><u>https://www.1001freefonts.com/work-sans.font</u></string>
+    <string name="artworkSearchURL">https://api.artic.edu/api/v1/artworks/search</string>
+    <string name="gallerySearchURL">https://api.artic.edu/api/v1/galleries</string>
 </resources>

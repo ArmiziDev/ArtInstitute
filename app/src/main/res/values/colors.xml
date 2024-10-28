@@ -5,4 +5,5 @@
     <color name="background">#FFC4C4C4</color>
     <color name="button">#FF2727EB</color>
     <color name="art_row">#B3B3B3FF</color>
+    <color name="url_link">#7B7BE7</color>
 </resources>

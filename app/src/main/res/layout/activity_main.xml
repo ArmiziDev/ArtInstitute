@@ -26,6 +26,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
+        android:fontFamily="@font/worksans_regular"
         android:hint="Search"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,6 +39,7 @@
         android:layout_height="35dp"
         android:layout_marginTop="4dp"
         android:backgroundTint="@color/button"
+        android:fontFamily="@font/worksans_regular"
         android:insetTop="0dp"
         android:insetBottom="0dp"
         android:onClick="onSearch"
@@ -55,6 +57,7 @@
         android:layout_height="35dp"
         android:layout_marginTop="4dp"
         android:backgroundTint="@color/button"
+        android:fontFamily="@font/worksans_regular"
         android:insetTop="0dp"
         android:insetBottom="0dp"
         android:onClick="onRandom"
@@ -80,17 +83,21 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/bwlions"
         app:layout_constraintBottom_toTopOf="@+id/copyrightText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline" />
+        app:layout_constraintTop_toTopOf="@+id/guideline" >
+
+    </androidx.recyclerview.widget.RecyclerView>
 
     <TextView
         android:id="@+id/copyrightText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
+        android:clickable="true"
+        android:fontFamily="@font/worksans_regular"
+        android:onClick="openCopyrightActivity"
         android:text="@string/copyright"
         android:textAlignment="center"
         android:textSize="12sp"
@@ -108,5 +115,17 @@
         app:layout_constraintEnd_toEndOf="@+id/recyclerView"
         app:layout_constraintStart_toStartOf="@+id/recyclerView"
         app:layout_constraintTop_toTopOf="@+id/guideline" />
+
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:alpha="0.4"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="@+id/recyclerView"
+        app:layout_constraintEnd_toEndOf="@+id/recyclerView"
+        app:layout_constraintStart_toStartOf="@+id/recyclerView"
+        app:layout_constraintTop_toTopOf="@+id/guideline"
+        app:srcCompat="@drawable/bwlions" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

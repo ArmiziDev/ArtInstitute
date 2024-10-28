@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background">
 
     <ImageView
         android:id="@+id/imageView"
@@ -11,6 +12,8 @@
         android:layout_height="100dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:clickable="true"
+        android:onClick="LeaveImageActivity"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/logo" />
@@ -19,7 +22,8 @@
         android:id="@+id/titleTextArtwork"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:fontFamily="@font/worksans_regular"
+        android:maxLines="3"
         android:textAlignment="center"
         android:textSize="28sp"
         android:textStyle="italic"
@@ -29,10 +33,12 @@
 
     <TextView
         android:id="@+id/artistNameText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="TextView"
+        android:fontFamily="@font/worksans_regular"
+        android:maxLines="2"
+        android:textAlignment="center"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView"
@@ -40,9 +46,11 @@
 
     <TextView
         android:id="@+id/artistInfoText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:fontFamily="@font/worksans_regular"
+        android:maxLines="2"
+        android:textAlignment="center"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView"
@@ -55,7 +63,7 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="125dp" />
 
-    <ImageView
+    <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/artistImageView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -65,18 +73,28 @@
         app:layout_constraintBottom_toTopOf="@+id/scaleText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideline4"
-        app:srcCompat="@drawable/not_available" />
+        app:layout_constraintTop_toBottomOf="@id/guideline4" />
 
     <TextView
         android:id="@+id/scaleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:fontFamily="@font/worksans_regular"
         android:text="Scale: 100%"
         android:textAlignment="center"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/imageProgressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/artistImageView2"
+        app:layout_constraintEnd_toEndOf="@+id/artistImageView2"
+        app:layout_constraintStart_toStartOf="@+id/artistImageView2"
+        app:layout_constraintTop_toTopOf="@+id/artistImageView2" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background">
 
     <ImageView
         android:id="@+id/logoImage2"
@@ -12,6 +13,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:clickable="true"
+        android:onClick="LeaveArtworkActivity"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/logo" />
@@ -21,6 +23,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
+        android:fontFamily="@font/worksans_regular"
+        android:maxLines="3"
         android:textAlignment="textEnd"
         android:textSize="30sp"
         android:textStyle="bold"
@@ -34,26 +38,32 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:fontFamily="@font/worksans_regular"
+        android:maxLines="2"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleText" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline3"
+    <ProgressBar
+        android:id="@+id/artworkProgressBar"
+        style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="145dp" />
+        app:layout_constraintBottom_toBottomOf="@+id/creditLineText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="32dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/artworkTypeTitleText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline3">
+        app:layout_constraintTop_toBottomOf="@+id/logoImage2">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -64,62 +74,82 @@
                 android:id="@+id/artistDetailsText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/worksans_regular"
                 android:textAlignment="center"
                 android:textSize="30sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="Pablo Picasso" />
 
             <TextView
                 android:id="@+id/artistDisplayText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:fontFamily="@font/worksans_regular"
                 android:textAlignment="center"
                 android:textSize="22sp"
-                android:textStyle="italic" />
+                android:textStyle="italic"
+                tools:text="Spanish, active France" />
 
             <ImageView
                 android:id="@+id/artistImageView"
                 android:layout_width="320dp"
                 android:layout_height="319dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="32dp" />
+                android:layout_marginTop="32dp"
+                android:clickable="true"
+                android:onClick="imagePressed"
+                android:scaleType="fitCenter" />
 
             <TextView
                 android:id="@+id/departmentTitleText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:fontFamily="@font/worksans_regular"
                 android:textAlignment="center"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                tools:text="Modern Art" />
 
-            <TextView
-                android:id="@+id/galleryTitleText"
+            <LinearLayout
+                android:id="@+id/galleryLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:textAlignment="center"
-                android:textSize="20sp"
-                app:layout_constraintEnd_toStartOf="@+id/ExternalLink"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:gravity="center_horizontal|center_vertical"
+                android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/ExternalLink"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:onClick="onGalleryPressed"
-                app:layout_constraintStart_toEndOf="@id/galleryTitleText"
-                app:layout_constraintTop_toTopOf="@id/galleryTitleText"
-                app:layout_constraintBottom_toBottomOf="@id/galleryTitleText"
-                app:srcCompat="@drawable/external_link" />
+                <TextView
+                    android:id="@+id/galleryTitleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:fontFamily="@font/worksans_regular"
+                    android:text="Gallery 391"
+                    android:textAlignment="center"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/externalLinkIcon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="0dp"
+                    android:clickable="true"
+                    android:onClick="onGalleryPressed"
+                    android:src="@drawable/external_link" />
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/placeOrigionText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:fontFamily="@font/worksans_regular"
                 android:textAlignment="center"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                tools:text="Spain" />
 
         </LinearLayout>
     </ScrollView>
@@ -129,6 +159,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:fontFamily="@font/worksans_regular"
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="italic"
@@ -141,6 +172,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:fontFamily="@font/worksans_regular"
         android:textAlignment="center"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/creditLineText"
@@ -152,6 +184,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:fontFamily="@font/worksans_regular"
         android:textAlignment="center"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -7,9 +7,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.window.OnBackInvokedDispatcher;
@@ -78,6 +81,9 @@ public class ArtworkActivity extends AppCompatActivity {
         TextView dimensions = findViewById(R.id.dimensionsText);
         TextView creditLine = findViewById(R.id.creditLineText);
         ImageView artistImage = findViewById(R.id.artistImageView);
+        ImageView galleryButton = findViewById(R.id.externalLinkIcon);
+        LinearLayout galleryLayout = findViewById(R.id.galleryLayout);
+        ProgressBar progressBar = findViewById(R.id.artworkProgressBar);
 
         title.setText(artwork.title);
         if (artwork.title.equals("null") || artwork.title.isEmpty()) { title.setVisibility(GONE); }
@@ -94,8 +100,14 @@ public class ArtworkActivity extends AppCompatActivity {
         artistInfo.setText(artwork.artistDetails);
         if (artwork.artistDetails.equals("null") || artwork.artistDetails.isEmpty()) { artistInfo.setVisibility(GONE); }
 
-        galleryTitle.setText(artwork.galleryTitle);
-        if (artwork.galleryTitle.equals("null") || artwork.galleryTitle.isEmpty()) { galleryTitle.setVisibility(GONE); }
+        SpannableString content = new SpannableString(artwork.galleryTitle);
+        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+        galleryTitle.setText(content);
+        if (artwork.galleryTitle.equals("null") || artwork.galleryTitle.isEmpty()) {
+            galleryTitle.setVisibility(GONE);
+            galleryButton.setVisibility(GONE);
+            galleryLayout.setVisibility(GONE);
+        }
 
         placeOrigion.setText(artwork.placeOfOrigin);
         if (artwork.placeOfOrigin.equals("null") || artwork.placeOfOrigin.isEmpty()) { placeOrigion.setVisibility(GONE); }
@@ -119,7 +131,7 @@ public class ArtworkActivity extends AppCompatActivity {
         if (artwork.creditLine.equals("null") || artwork.creditLine.isEmpty()) { creditLine.setVisibility(GONE); }
 
         String imageUrl = "https://www.artic.edu/iiif/2/" + artwork.imageId + "/full/843,/0/default.jpg";
-        ArtworkDownloader.getImage(imageUrl, artistImage);
+        ArtworkDownloader.getImage(imageUrl, artistImage, () -> progressBar.setVisibility(View.INVISIBLE));
     }
 
     private void backInvoked() {
@@ -128,7 +140,7 @@ public class ArtworkActivity extends AppCompatActivity {
 
     public void imagePressed(View v)
     {
-        Intent intent= new Intent(this, ImageActivity.class);
+        Intent intent = new Intent(this, ImageActivity.class);
         intent.putExtra("artwork", current_artwork);
 
         activityResultLauncher.launch(intent);
@@ -137,9 +149,20 @@ public class ArtworkActivity extends AppCompatActivity {
     public void onGalleryPressed(View v)
     {
         String url = "https://www.artic.edu/galleries/" + current_artwork.galleryId;
-        Uri webpage = Uri.parse(url);
 
-        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        Log.d("onGalleryPressed", "Generated URL: " + url);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
+    public void LeaveArtworkActivity(View v)
+    {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
     }
 }

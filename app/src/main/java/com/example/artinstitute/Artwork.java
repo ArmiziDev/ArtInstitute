@@ -19,8 +19,6 @@ public class Artwork implements Serializable {
     public String apiLink;
     public String id;
 
-    public Artwork()
-    {}
     public Artwork(String id, String title, String dateDisplay, String artistDisplay, String mediumDisplay,
                    String artworkTypeTitle, String imageId,
                    String dimensions, String departmentTitle, String creditLine,

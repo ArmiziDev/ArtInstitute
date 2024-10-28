@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -12,6 +13,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -31,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ArtworkDownloader artworkDownloader;
     private ActivityResultLauncher<Intent> activityResultLauncher;
     ProgressBar searchProgressBar;
+    ImageView backgroundImage;
+    String current_search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
 
+        backgroundImage = findViewById(R.id.backgroundImage);
+
         //Activity Data Transfer
         activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -66,14 +72,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {}
     public void onSearch(View v)
     {
-        String search_text = String.valueOf(search.getText());
+        current_search = String.valueOf(search.getText());
+
+        if (current_search.length() < 3)
+        {
+            searchAlertDialog("Search string too short", "Please try a longer search string");
+            return;
+        }
+
         searchProgressBar.setVisibility(View.VISIBLE);
-        artworkDownloader.Search(search_text, this);
+        artworkDownloader.Search(current_search, this);
+
+        backgroundImage.setVisibility(View.INVISIBLE);
     }
-    public void onRandom(View v)
+
+    private void searchAlertDialog(String title, String desc)
     {
-        Toast.makeText(this, "Random!", Toast.LENGTH_SHORT).show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.drawable.logo);
+
+        builder.setMessage(desc);
+        builder.setTitle(title);
+
+        builder.setPositiveButton("OK", (dialog, id) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void onRandom(View v)
+    {;
         search.setText("");
+        ArtworkDownloader.Random(this);
     }
 
     public void updateRecyclerView(ArrayList<Artwork> artworks)
@@ -84,13 +114,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (artworkList.isEmpty())
         {
-            recyclerView.setBackgroundResource(R.drawable.bwlions);
-        } else {
-            recyclerView.setBackgroundResource(0);
+            searchAlertDialog("No search results found", "No results found for '" + current_search + "'.\nPlease try another search string");
         }
 
         searchProgressBar.setVisibility(View.INVISIBLE);
-
     }
 
     @Override
@@ -113,5 +140,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onLongClick(View v) {
         return false;
+    }
+
+    public void openCopyrightActivity(View v)
+    {
+        Intent intent = new Intent(this, CopyrightActivity.class);
+        startActivity(intent);
+    }
+
+    public void connectionError() {
+        searchAlertDialog("NoConnectionError", "No network connection present - cannot contact Art Institute API server.");
     }
 }

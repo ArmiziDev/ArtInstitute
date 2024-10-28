@@ -22,6 +22,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ArtworkActivity" />
+        <activity android:name=".ImageActivity" />
+        <activity android:name=".CopyrightActivity"/>
 
     </application>
 

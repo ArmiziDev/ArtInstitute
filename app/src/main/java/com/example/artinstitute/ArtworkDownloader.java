@@ -19,24 +19,24 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Random;
+
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 public class ArtworkDownloader {
     private static final String TAG = "ArtworkDownloader";
     private static RequestQueue queue;
-    private static final String artworkSearchURL = "https://api.artic.edu/api/v1/artworks/search";
-    private static final String artworkResultURL = "https://api.artic.edu/api/v1/artworks";
-    private static final String page_limit = "15";
-    private static final String page = "1";
 
     public void Search(String search_request, MainActivity activity)
     {
         queue = Volley.newRequestQueue(activity);
 
         // Build the URL
-        Uri.Builder buildURL = Uri.parse(artworkSearchURL).buildUpon();
+        Uri.Builder buildURL = Uri.parse(activity.getString(R.string.artworkSearchURL)).buildUpon();
         buildURL.appendQueryParameter("q", search_request);
-        buildURL.appendQueryParameter("limit", page_limit);
-        buildURL.appendQueryParameter("page", page);
+        buildURL.appendQueryParameter("limit", activity.getString(R.string.page_limit));
+        buildURL.appendQueryParameter("page", "1");
         buildURL.appendQueryParameter("fields", "title,date_display,artist_display,medium_display," +
                 "artwork_type_title,image_id,dimensions,department_title,credit_line,place_of_origin," +
                 "gallery_title,gallery_id,id,api_link");
@@ -49,13 +49,14 @@ public class ArtworkDownloader {
                     @Override
                     public void onResponse(JSONObject response) {
                         ArrayList<Artwork> artworks = parseJSON(response);
-                        activity.updateRecyclerView(artworks); // This method should update your RecyclerView
+                        activity.updateRecyclerView(artworks); // update recycler view
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d(TAG, "onErrorResponse: ArtworkDownloader, Error fetching artwork data " + error);
+                        activity.connectionError();
                     }
                 }
         );
@@ -63,7 +64,7 @@ public class ArtworkDownloader {
         queue.add(request);
     }
 
-    private ArrayList<Artwork> parseJSON(JSONObject response) {
+    private static ArrayList<Artwork> parseJSON(JSONObject response) {
         ArrayList<Artwork> artworks = new ArrayList<>();
         try {
             JSONArray dataArray = response.getJSONArray("data");
@@ -95,23 +96,101 @@ public class ArtworkDownloader {
         return artworks;
     }
 
-
-    public static void getImage(String thumbnailUrl, ImageView imageView) {
-        Response.Listener<Bitmap> listener = imageView::setImageBitmap;
-
-        Response.ErrorListener errorListener = error ->
-                Log.d(TAG, "getImage: Image download error: " + error.getMessage());
-
-        ImageRequest imageRequest = new ImageRequest(
-                thumbnailUrl,
-                listener,
-                0, 0,  // Width and height (0 means use actual size)
-                ImageView.ScaleType.CENTER_INSIDE,
-                Bitmap.Config.RGB_565,
-                errorListener
-        );
-
-        queue.add(imageRequest);
+    private static ArrayList<String> parseGalleries(JSONObject response) {
+        ArrayList<String> galleryNumbers = new ArrayList<>();
+        try {
+            JSONArray dataArray = response.getJSONArray("data");
+            for (int i = 0; i < dataArray.length(); i++) {
+                JSONObject galleryJson = dataArray.getJSONObject(i);
+                String galleryNumber = galleryJson.optString("number", "Unknown");
+                galleryNumbers.add(galleryNumber);
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "Error parsing JSON data", e);
+        }
+        return galleryNumbers;
     }
 
+    public static void searchGallery(String gallery, MainActivity activity)
+    {
+        Uri.Builder buildURL = Uri.parse(activity.getString(R.string.artworkSearchURL)).buildUpon();
+        buildURL.appendQueryParameter("gallery_id", gallery);
+        buildURL.appendQueryParameter("limit", activity.getString(R.string.page_limit));
+        buildURL.appendQueryParameter("page", "1");
+        buildURL.appendQueryParameter("fields", "title,date_display,artist_display,medium_display," +
+                "artwork_type_title,image_id,dimensions,department_title,credit_line,place_of_origin," +
+                "gallery_title,gallery_id,id,api_link");
+
+        String url = buildURL.build().toString();
+
+        // Request
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        ArrayList<Artwork> artworks = parseJSON(response);
+                        Random random = new Random();
+                        Artwork artwork = artworks.get(random.nextInt(artworks.size()));
+                        activity.enterArtwork(artwork);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d(TAG, "onErrorResponse: ArtworkDownloader, Error fetching artwork data " + error);
+                        activity.connectionError();
+                    }
+                }
+        );
+
+        queue.add(request);
+    }
+
+    public static void Random(MainActivity context)
+    {
+        Artwork artwork;
+        queue = Volley.newRequestQueue(context);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, context.getString(R.string.gallerySearchURL), null,
+                response -> {
+                    ArrayList<String> galleries = parseGalleries(response);
+                    if (!galleries.isEmpty()) {
+                        Random random = new Random();
+                        String gallery = galleries.get(random.nextInt(galleries.size()));
+                        searchGallery(gallery, context);
+                    } else {
+                        Log.d(TAG, "No galleries found.");
+                    }
+                },
+                error -> Log.d(TAG, "Error fetching galleries: " + error.getMessage())
+        );
+
+        queue.add(request);
+    }
+
+    public static void getImage(String url, ImageView imageView, Runnable onImageLoaded) {
+        long start = System.currentTimeMillis();  // Start the timer
+
+        Picasso.get()
+                .load(url)
+                .config(Bitmap.Config.RGB_565)
+                .centerInside()
+                .fit()
+                .error(R.drawable.not_available)
+                .into(imageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        long time = System.currentTimeMillis() - start;  // Calculate the time taken
+                        Log.d(TAG, "onSuccess: Image loaded in " + time + " ms");
+
+                        onImageLoaded.run();  // Execute the callback
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.d(TAG, "onError: Image download error: " + e.getMessage());
+                        onImageLoaded.run();
+                    }
+                });
+    }
 }

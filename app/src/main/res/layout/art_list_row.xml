@@ -24,14 +24,15 @@
         android:id="@+id/artText"
         android:layout_width="260dp"
         android:layout_height="90dp"
+        android:fontFamily="@font/worksans_regular"
         android:gravity="center"
-        android:text="Example Title of Art"
         android:textAlignment="viewStart"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/artImage"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Example Title of Art" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"

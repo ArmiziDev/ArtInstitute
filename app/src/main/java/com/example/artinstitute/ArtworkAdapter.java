@@ -42,8 +42,7 @@ public class ArtworkAdapter extends RecyclerView.Adapter<ArtworkViewHolder> {
         holder.title.setText(artwork.title);
 
         String thumbnailUrl = "https://www.artic.edu/iiif/2/" + artwork.imageId + "/full/200,/0/default.jpg";
-        ArtworkDownloader.getImage(thumbnailUrl, holder.image);
-        holder.progressBar.setVisibility(View.INVISIBLE);
+        ArtworkDownloader.getImage(thumbnailUrl, holder.image,  () -> holder.progressBar.setVisibility(View.INVISIBLE));
     }
 
     @Override
